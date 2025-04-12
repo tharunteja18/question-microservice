@@ -89,7 +89,7 @@ public class QuestionService {
 
         for(Response r:responses)
         {
-            Question q =questionDao.getReferenceById(r.getId());
+            Question q =questionDao.findById(r.getId()).get();
             if(r.getResponse().equals(q.getRightAnswer()))
             {
                 score++;
