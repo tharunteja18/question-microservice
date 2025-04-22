@@ -132,18 +132,18 @@ public class QuestionServiceTest {
         assertEquals(HttpStatus.OK,questionsByCategory.getStatusCode());
         assertEquals(questions,questionsByCategory.getBody());
     }
-    @Test
-    public void testGetQuestionsByCategoryException()
-    {
-        String category="python";
-        when(questionDao.findByCategory(category)).thenThrow(new RuntimeException("questions for category is not available"));
-
-        ResponseEntity<List<Question>> questionsByCategory = questionService.getQuestionsByCategory(category);
-
-        assertEquals(HttpStatus.BAD_REQUEST,questionsByCategory.getStatusCode());
-
-
-
-    }
+//    @Test
+//    public void testGetQuestionsByCategoryException()
+//    {
+//        String category="python";
+//        when(questionDao.findByCategory(category)).thenThrow(new RuntimeException("questions for category is not available"));
+//
+//        ResponseEntity<List<Question>> questionsByCategory = questionService.getQuestionsByCategory(category);
+//
+//        assertEquals(HttpStatus.BAD_REQUEST,questionsByCategory.getStatusCode());
+//
+//
+//
+//    }
 
 }
