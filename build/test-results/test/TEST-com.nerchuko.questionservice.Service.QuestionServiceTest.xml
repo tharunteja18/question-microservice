@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.nerchuko.questionservice.Service.QuestionServiceTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2025-05-10T09:54:56.454Z" hostname="DESKTOP-MRQV6PO" time="2.392">
+  <properties/>
+  <testcase name="getAllQuestionsTestWithException()" classname="com.nerchuko.questionservice.Service.QuestionServiceTest" time="2.332"/>
+  <testcase name="getQuestionsFromIdTest()" classname="com.nerchuko.questionservice.Service.QuestionServiceTest" time="0.022"/>
+  <testcase name="getQuestionsForQuizTest()" classname="com.nerchuko.questionservice.Service.QuestionServiceTest" time="0.005"/>
+  <testcase name="getQuestionsByCategoryTest()" classname="com.nerchuko.questionservice.Service.QuestionServiceTest" time="0.005"/>
+  <testcase name="getAllQuestionsTest()" classname="com.nerchuko.questionservice.Service.QuestionServiceTest" time="0.004"/>
+  <testcase name="getQuestionByCategoryTestWithException()" classname="com.nerchuko.questionservice.Service.QuestionServiceTest" time="0.004"/>
+  <testcase name="addQuestionTest()" classname="com.nerchuko.questionservice.Service.QuestionServiceTest" time="0.007"/>
+  <testcase name="getScoreTest()" classname="com.nerchuko.questionservice.Service.QuestionServiceTest" time="0.006"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[java.lang.RuntimeException
+java.lang.RuntimeException
+]]></system-err>
+</testsuite>
