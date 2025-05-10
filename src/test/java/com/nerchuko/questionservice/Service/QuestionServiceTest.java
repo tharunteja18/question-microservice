@@ -1,24 +1,29 @@
 package com.nerchuko.questionservice.Service;
 
+
 import com.nerchuko.questionservice.Model.Question;
+import com.nerchuko.questionservice.Model.QuestionWrapper;
+import com.nerchuko.questionservice.Model.Response;
 import com.nerchuko.questionservice.Persistance.QuestionDao;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.test.util.AssertionErrors.assertEquals;
 
-@Slf4j
+@ExtendWith(MockitoExtension.class)
 public class QuestionServiceTest {
 
     @Mock
@@ -28,122 +33,120 @@ public class QuestionServiceTest {
     private QuestionService questionService;
 
 
+        List<Question> questions;
+        List<Question> emptyQuestions;
+        int noOfQuestions;
 
-    private List<Question> questions;
+        List<Integer> questionIds;
 
-    private List<Question> emptyQuestions;
+        List<QuestionWrapper> questionWrapper;
+        List<Question> question;
 
-    private Question singleQuesion=new Question(1,"Java","Easy","class","interface","implements","Extend","Which keyword in java is used to create a subclass","Extends");
-    @BeforeEach
-    public void setUp()
-    {
-        MockitoAnnotations.openMocks(this);
-
-        questions= Arrays.asList(new Question(1,"Java","Easy","class","interface","implements","Extend","Which keyword in java is used to create a subclass","Extends"),
-                new Question(2,"Java","Medium","option1","option2","option3","option4","In java, what is the default value for uninitialized boolean value?","false"));
-
-        emptyQuestions=Arrays.asList();
-    }
-
-    @Test
-    public void getAllQuestionsTest() {
-
-//        log.info("Inside the GetAllQuestionsTest Method");
-        // mocking the behavior of the questionDao
-        when(questionDao.findAll()).thenReturn(questions);
-        // calling the method to test
-        ResponseEntity<List<Question>> response=questionService.getAllQuestions();
-
-        // validating the result or response
-        // first argument is expected, second is actual in  assertEquals
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        System.out.println("HttpStatus.OK  :"+HttpStatus.OK);
-        System.out.println("response.getStatusCode()   :"+response.getStatusCode());
-
-        assertEquals(questions,response.getBody());
-        System.out.println("questions  :"+questions);
-        System.out.println("response.getBody()   :"+response.getBody());
-
-
-    }
-
-
-    @Test
-    public void testGetAllQuestionsWhenExceptionOccurs()
-    {
-        when(questionDao.findAll()).thenThrow(new RuntimeException("Test Exception"));
-
-        ResponseEntity<List<Question>> response=questionService.getAllQuestions();
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-
-        System.out.println("HttpStatus.BAD_REQUEST  :"+HttpStatus.BAD_REQUEST);
-        System.out.println("response.getStatusCode()   :"+response.getStatusCode());
-        assertEquals(new ArrayList<>(), response.getBody());
-        System.out.println("new ArrayList<>()   :"+new ArrayList<>());
-        System.out.println("response.getBody()   :"+response.getBody());
-    }
-
-    @Test
-    public void testGetAllQuestionsWhenEmptyList()
-    {
-        when(questionDao.findAll()).thenThrow(new RuntimeException("Empty list..."));
-
-        ResponseEntity<List<Question>> response = questionService.getAllQuestions();
-
-        assertEquals(HttpStatus.BAD_REQUEST,response.getStatusCode());
-        System.out.println("HttpStatus.BAD_REQUEST.   :"+HttpStatus.BAD_REQUEST);
-        System.out.println("response.getStatusCode()  :"+response.getStatusCode());
-
-        assertEquals(new ArrayList<>(), response.getBody());
-        System.out.println("new ArrayList<>()   :"+new ArrayList<>());
-        System.out.println("response.getBody()   :"+response.getBody());
-
-    }
-
-
-
-        @Test
-        public void testAddQuestion()
+        String category;
+        @BeforeEach
+        void setUp()
         {
-        String result =questionService.addQuestion(singleQuesion);
-        assertEquals("Question added", result);
+             questions=List.of(new Question(1,"java","easy","class","interface","implements","Extend","Which keyword in java is used to create a subclass","Extends"),
+                    new Question(2,"java","easy","int","char","float","Integer","which one is not related to primitive","Integer"));
+
+             emptyQuestions= Arrays.asList();
+
+             category="java";
+             noOfQuestions=2;
+             questionIds= Arrays.asList(1,2);
+//             questionWrapper=Arrays.asList();
+        }
+        @Test
+        public void getAllQuestionsTest()
+        {
+            when(questionDao.findAll()).thenReturn(questions);
+            ResponseEntity<List<Question>> response=questionService.getAllQuestions();
+
+            assertEquals("status code", HttpStatus.OK, response.getStatusCode());
+            assertEquals("size comparing",2,response.getBody().size());
+
+        }
+        @Test
+        public void getAllQuestionsTestWithException()
+        {
+            when(questionDao.findAll()).thenThrow(RuntimeException.class);
+            ResponseEntity<List<Question>> response=questionService.getAllQuestions();
+
+            assertEquals("respone_check",Arrays.asList(),response.getBody());
+            assertEquals("Exception",HttpStatus.BAD_REQUEST,response.getStatusCode());
         }
 
 
-//    public ResponseEntity<List<Question>> getQuestionsByCategory(String category)
-//    {
-//        try {
-//            return new ResponseEntity<>(questionDao.findByCategory(category), HttpStatus.OK);
-//        }
-//        catch (Exception e)
-//        {
-//            e.printStackTrace();
-//        }
-//        return new ResponseEntity<>(new ArrayList<>(),HttpStatus.BAD_REQUEST);
-//    }
     @Test
-    public void testGetQuestionsByCategory()
+    public void getQuestionsByCategoryTest()
     {
-        String category="java";
         when(questionDao.findByCategory(category)).thenReturn(questions);
-
-        ResponseEntity<List<Question>> questionsByCategory = questionService.getQuestionsByCategory(category);
-
-        assertEquals(HttpStatus.OK,questionsByCategory.getStatusCode());
-        assertEquals(questions,questionsByCategory.getBody());
+        ResponseEntity<List<Question>> response = questionService.getQuestionsByCategory(category);
+        assertEquals("status code", HttpStatus.OK,response.getStatusCode());
+        assertEquals("checking the size",2,response.getBody().size());
     }
-//    @Test
-//    public void testGetQuestionsByCategoryException()
-//    {
-//        String category="python";
-//        when(questionDao.findByCategory(category)).thenThrow(new RuntimeException("questions for category is not available"));
+
+    @Test
+    public void getQuestionByCategoryTestWithException() {
+        when(questionDao.findByCategory(category)).thenThrow(RuntimeException.class);
+        ResponseEntity<List<Question>> response = questionService.getQuestionsByCategory(category);
+        assertEquals("checking the status",HttpStatus.BAD_REQUEST,response.getStatusCode());
+        assertEquals("checking the body",new ArrayList<>(),response.getBody());
+
+    }
+
+    @Test
+    public void addQuestionTest()
+    {
+        when(questionDao.save(questions.get(0))).thenReturn(questions.get(0));
+        String result=questionService.addQuestion(questions.get(0));
+        assertEquals("return type check","Question added", result);
+    }
+
+    @Test
+    public void getQuestionsForQuizTest()
+    {
+        when(questionDao.findRandomQuestionsByCategory(category,noOfQuestions)).thenReturn(questionIds);
+        ResponseEntity<List<Integer>> response=questionService.getQuestionsForQuiz(category,noOfQuestions);
+
+        assertEquals("status checking", OK, response.getStatusCode());
+        assertEquals("size",2, response.getBody().size());
+    }
+
+
+    @Test
+    public void getQuestionsFromIdTest()
+    {
+        when(questionDao.findById(1)).thenReturn(Optional.of(questions.get(0)));
+        when(questionDao.findById(2)).thenReturn(Optional.of(questions.get(1)));
+        ResponseEntity<List<QuestionWrapper>> response=questionService.getQuestionsFromId(questionIds);
+    }
+
+
+//    public ResponseEntity<Integer> getScore(List<Response> responses) {
+//        int score=0;
 //
-//        ResponseEntity<List<Question>> questionsByCategory = questionService.getQuestionsByCategory(category);
-//
-//        assertEquals(HttpStatus.BAD_REQUEST,questionsByCategory.getStatusCode());
-//
-//
-//
+//        for(Response r:responses)
+//        {
+//            Question q =questionDao.findById(r.getId()).get();
+//            if(r.getResponse().equals(q.getRightAnswer()))
+//            {
+//                score++;
+//            }
+//        }
+//        return new ResponseEntity<>(score,HttpStatus.OK);
 //    }
+
+    @Test
+    public void getScoreTest()
+    {
+        when(questionDao.findById(1)).thenReturn(Optional.of(questions.get(0)));
+        when(questionDao.findById(2)).thenReturn(Optional.of(questions.get(1)));
+        ResponseEntity<Integer> response=questionService.getScore(Arrays.asList(new Response(1,"Extend"),new Response(2,"Integer")));
+
+        assertEquals("status", OK,response.getStatusCode());
+    }
+
+
 
 }

@@ -20,6 +20,9 @@ public class QuestionService {
 
     @Autowired
     private QuestionDao questionDao;
+
+
+    //method-1
     public ResponseEntity<List<Question>> getAllQuestions()
     {
         try {
@@ -32,6 +35,7 @@ public class QuestionService {
         return new ResponseEntity<>(new ArrayList<>(),HttpStatus.BAD_REQUEST);
     }
 
+    //method-2
     public ResponseEntity<List<Question>> getQuestionsByCategory(String category)
     {
         try {
@@ -52,10 +56,7 @@ public class QuestionService {
     public ResponseEntity<List<Integer>> getQuestionsForQuiz(String category, Integer noOfQuestions) {
 
        List<Integer> questionIds =  questionDao.findRandomQuestionsByCategory(category, noOfQuestions);
-
-
         return new ResponseEntity<>(questionIds,HttpStatus.OK);
-
     }
 
     public ResponseEntity<List<QuestionWrapper>> getQuestionsFromId(List<Integer> questionIds) {
@@ -96,7 +97,5 @@ public class QuestionService {
             }
         }
         return new ResponseEntity<>(score,HttpStatus.OK);
-
-
     }
 }
