@@ -15,7 +15,7 @@ public class SwaggerConfiguration {
                 .info(new Info()
                 .title("Question Service API")
                         .version("1.0")
-                        .description("Question Service API Information"));
+                        .description("This document provides a detailed overview of the Question Microservice API. This service is responsible for managing a repository of quiz questions, including their creation, retrieval, organization by category, and the dynamic generation of quizzes. It also provides functionality for scoring user responses."));
 
     }
 
